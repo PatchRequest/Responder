@@ -79,7 +79,7 @@ class LLMNR(BaseRequestHandler):  # LLMNR Server class
 					Buffer1.calculate()
 					soc.sendto(NetworkSendBufferPython2or3(Buffer1), self.client_address)
 					
-					print(color("%s %s Poisoned answer sent to %s for name %s" % (LineHeader,datetime.now().strftime("%d-%b-%Y (%H:%M:%S.%f)"), self.client_address[0].replace("::ffff:",""), Name), 2, 1))
+					print(color("%s %s Poisoned answer sent to %s for name %s" % (LineHeader,datetime.datetime.now().strftime("%d-%b-%Y (%H:%M:%S)"), self.client_address[0].replace("::ffff:",""), Name), 2, 1))
 					SavePoisonersToDb({
 							'Poisoner': 'LLMNR', 
 							'SentToIp': self.client_address[0], 
@@ -92,7 +92,7 @@ class LLMNR(BaseRequestHandler):  # LLMNR Server class
 					Buffer1.calculate()
 					soc.sendto(NetworkSendBufferPython2or3(Buffer1), self.client_address)
 					
-					print(color("%s %s Poisoned answer sent to %s for name %s" % (LineHeader,datetime.now().strftime("%d-%b-%Y (%H:%M:%S.%f)"), self.client_address[0].replace("::ffff:",""), Name), 2, 1))
+					print(color("%s %s Poisoned answer sent to %s for name %s" % (LineHeader,datetime.datetime.now().strftime("%d-%b-%Y (%H:%M:%S)"), self.client_address[0].replace("::ffff:",""), Name), 2, 1))
 					SavePoisonersToDb({
 							'Poisoner': 'LLMNR6', 
 							'SentToIp': self.client_address[0], 
