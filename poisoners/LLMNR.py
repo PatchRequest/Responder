@@ -16,7 +16,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 from packets import LLMNR_Ans, LLMNR6_Ans
 from utils import *
-from datetime import datetime
+import datetime
 
 if (sys.version_info > (3, 0)):
 	from socketserver import BaseRequestHandler
