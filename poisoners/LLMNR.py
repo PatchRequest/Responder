@@ -80,7 +80,7 @@ class LLMNR(BaseRequestHandler):  # LLMNR Server class
 					soc.sendto(NetworkSendBufferPython2or3(Buffer1), self.client_address)
 
 					if not settings.Config.Quiet_Mode:
-						LineHeader = "[*] [LLMNR]"
+						
 						print(color("%s %s  Poisoned answer sent to %s for name %s" % (LineHeader, datetime.datetime.now().strftime("%d-%b-%Y (%H:%M:%S)"), self.client_address[0].replace("::ffff:",""), Name), 2, 1))
             
 					SavePoisonersToDb({
@@ -96,7 +96,7 @@ class LLMNR(BaseRequestHandler):  # LLMNR Server class
 					soc.sendto(NetworkSendBufferPython2or3(Buffer1), self.client_address)
 
 					if not settings.Config.Quiet_Mode:
-						LineHeader = "[*] [LLMNR]"
+						
 						print(color("%s %s  Poisoned answer sent to %s for name %s" % (LineHeader, datetime.datetime.now().strftime("%d-%b-%Y (%H:%M:%S)"), self.client_address[0].replace("::ffff:",""), Name), 2, 1))
 
 					SavePoisonersToDb({

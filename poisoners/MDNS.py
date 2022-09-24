@@ -76,7 +76,7 @@ class MDNS(BaseRequestHandler):
 			soc.sendto(NetworkSendBufferPython2or3(Buffer), self.client_address)
 
 			if not settings.Config.Quiet_Mode:
-        LineHeader = "[*] [MDNS]"
+        		
 				print(color('%s %s Poisoned answer sent to %-15s for name %s' % (LineHeader,datetime.datetime.now().strftime("%d-%b-%Y (%H:%M:%S)"),self.client_address[0].replace("::ffff:",""), Request_Name), 2, 1))
 
 			SavePoisonersToDb({
@@ -93,8 +93,8 @@ class MDNS(BaseRequestHandler):
 			soc.sendto(NetworkSendBufferPython2or3(Buffer), self.client_address)
 
 			if not settings.Config.Quiet_Mode:
-        LineHeader = "[*] [MDNS]"
-				print(color(''%s %s Poisoned answer sent to %-15s for name %s' % (LineHeader,datetime.datetime.now().strftime("%d-%b-%Y (%H:%M:%S)"),self.client_address[0].replace("::ffff:",""), Request_Name), 2, 1))
+        
+				print(color('%s %s Poisoned answer sent to %-15s for name %s' % (LineHeader,datetime.datetime.now().strftime("%d-%b-%Y (%H:%M:%S)"),self.client_address[0].replace("::ffff:",""), Request_Name), 2, 1))
 			SavePoisonersToDb({
 						'Poisoner': 'MDNS6', 
 						'SentToIp': self.client_address[0], 
