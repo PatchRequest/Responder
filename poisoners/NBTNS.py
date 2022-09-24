@@ -32,7 +32,7 @@ class NBTNS(BaseRequestHandler):
 		data, socket = self.request
 		Name = Decode_Name(NetworkRecvBufferPython2or3(data[13:45]))
 		# Break out if we don't want to respond to this host
-		if RespondToThisHost(self.client_address[0], Name) is not True:
+		if RespondToThisHost(self.client_address[0].replace("::ffff:",""), Name) is not True:
 			return None
 
 		if data[2:4] == b'\x01\x10':
@@ -48,8 +48,10 @@ class NBTNS(BaseRequestHandler):
 				Buffer1 = NBT_Ans()
 				Buffer1.calculate(data)
 				socket.sendto(NetworkSendBufferPython2or3(Buffer1), self.client_address)
-				LineHeader = "[*] [NBT-NS]"
-				print(color("%s %s Poisoned answer sent to %s for name %s (service: %s)" % (LineHeader,datetime.datetime.now().strftime("%d-%b-%Y (%H:%M:%S)"), self.client_address[0].replace("::ffff:",""), Name, NBT_NS_Role(NetworkRecvBufferPython2or3(data[43:46]))), 2, 1))
+
+				if not settings.Config.Quiet_Mode:
+					LineHeader = "[*] [NBT-NS]"
+					print(color("%s %s  Poisoned answer sent to %s for name %s (service: %s)" % (LineHeader,datetime.datetime.now().strftime("%d-%b-%Y (%H:%M:%S)"), self.client_address[0].replace("::ffff:",""), Name, NBT_NS_Role(NetworkRecvBufferPython2or3(data[43:46]))), 2, 1))
 				SavePoisonersToDb({
 							'Poisoner': 'NBT-NS', 
 							'SentToIp': self.client_address[0], 

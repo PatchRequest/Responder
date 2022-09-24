@@ -96,8 +96,8 @@ class Settings:
 		self.LDAP_On_Off     = self.toBool(config.get('Responder Core', 'LDAP'))
 		self.DNS_On_Off      = self.toBool(config.get('Responder Core', 'DNS'))
 		self.RDP_On_Off      = self.toBool(config.get('Responder Core', 'RDP'))
-		self.DCERPC_On_Off      = self.toBool(config.get('Responder Core', 'DCERPC'))
-		self.WinRM_On_Off      = self.toBool(config.get('Responder Core', 'WINRM'))
+		self.DCERPC_On_Off   = self.toBool(config.get('Responder Core', 'DCERPC'))
+		self.WinRM_On_Off    = self.toBool(config.get('Responder Core', 'WINRM'))
 		self.Krb_On_Off      = self.toBool(config.get('Responder Core', 'Kerberos'))
 
 		# Db File
@@ -133,9 +133,10 @@ class Settings:
 		self.Bind_To6           = utils.FindLocalIP6(self.Interface, self.OURIP)
 		self.DHCP_DNS           = options.DHCP_DNS
 		self.ExternalIP6        = options.ExternalIP6
+		self.Quiet_Mode			= options.Quiet
 
 		if self.Interface == "ALL":
-                	self.Bind_To_ALL  = True
+			self.Bind_To_ALL  = True
 		else:
 			self.Bind_To_ALL  = False
 		#IPV4
@@ -203,7 +204,7 @@ class Settings:
 			self.HtmlToInject = "<img src='file://///"+self.Bind_To+"/pictures/logo.jpg' alt='Loading' height='1' width='1'>"
 
 		if len(self.WPAD_Script) == 0:
-			self.WPAD_Script = 'function FindProxyForURL(url, host){if ((host == "localhost") || shExpMatch(host, "localhost.*") ||(host == "127.0.0.1") || isPlainHostName(host)) return "DIRECT"; if (dnsDomainIs(host, "ProxySrv")||shExpMatch(host, "(*.ProxySrv|ProxySrv)")) return "DIRECT"; return "PROXY '+self.Bind_To+':3128; PROXY '+self.Bind_To+':3141; DIRECT";}'
+			self.WPAD_Script = 'function FindProxyForURL(url, host){if ((host == "localhost") || shExpMatch(host, "localhost.*") ||(host == "127.0.0.1") || isPlainHostName(host)) return "DIRECT"; return "PROXY '+self.Bind_To+':3128; PROXY '+self.Bind_To+':3141; DIRECT";}'
 
 		if self.Serve_Exe == True:	
 			if not os.path.exists(self.Html_Filename):
@@ -220,8 +221,10 @@ class Settings:
 		self.RespondTo         = list(filter(None, [x.upper().strip() for x in config.get('Responder Core', 'RespondTo').strip().split(',')]))
 		self.RespondToName     = list(filter(None, [x.upper().strip() for x in config.get('Responder Core', 'RespondToName').strip().split(',')]))
 		self.DontRespondTo     = list(filter(None, [x.upper().strip() for x in config.get('Responder Core', 'DontRespondTo').strip().split(',')]))
-		self.DontRespondToName = list(filter(None, [x.upper().strip() for x in config.get('Responder Core', 'DontRespondToName').strip().split(',')]))
-
+		self.DontRespondToName_= list(filter(None, [x.upper().strip() for x in config.get('Responder Core', 'DontRespondToName').strip().split(',')]))
+		#add a .local to all provided DontRespondToName
+		self.MDNSTLD           = ['.LOCAL']
+		self.DontRespondToName = [x+y for x in self.DontRespondToName_ for y in ['']+self.MDNSTLD]
 		#Generate Random stuff for one Responder session
 		self.MachineName       = 'WIN-'+''.join([random.choice('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789') for i in range(11)])
 		self.Username            = ''.join([random.choice('ABCDEFGHIJKLMNOPQRSTUVWXYZ') for i in range(6)])
